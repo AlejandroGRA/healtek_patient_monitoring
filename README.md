@@ -1,7 +1,7 @@
 # healtek_patient_monitoring
-Healtek is a Docker application which represents an approach in how to implement a BigData platform that can ingest, transform, load and serve patient data from an IoT device and generate near real-time alerts based on metrics over that data.
+Healtek is a Docker application which represents an approach in how to implement a Big Data platform that can ingest, transform, load and serve patient data from an IoT device and generate near real-time alerts and dashboards based on metrics over that data.
 
-Know more about the project in this repository's Wiki.
+Know more about the project in this repository's [Wiki](https://github.com/AlejandroGRA/healtek_patient_monitoring/wiki).
 
 ## Table of contents
 1. [Install Docker](#installDocker)
