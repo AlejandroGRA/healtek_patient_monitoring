@@ -90,17 +90,17 @@ To remove all container from the project, at the root of the project run:
 $ docker-compose down
 ```
 ### Make sure the services are running correctly <a name="checkServices"></a>
-Run the next command at a terminal:
+Run the next command from a terminal:
 ```
 $ docker ps
 ```
-There must be **six** services running, like as portrayed in the next image:  
+There must be **six** services running, as portrayed in the next image:  
 [![Capture4.png](https://i.postimg.cc/R0Gqs74d/Capture4.png)](https://postimg.cc/KKkZ4gK3)  
 If you are experiencing errors or a service container is not running, you can see the logs of the service with the following command:
 ```
 $ docker logs container_name
 ```
-1. **IoT sensor and Mosquitto**
+1. IoT sensor and Mosquitto
 
 To check that the sensor is sending data to the MQTT broker correctly, open a new terminal and run the following commands:
 ```
@@ -112,18 +112,18 @@ $ mosquitto_sub -t test -h localhost
 ```
 If everything's ok, you should see the sensor data being printed on the screen:
 
-IMAGE_MOSQUITTO
+[![mosquitto-sub.png](https://i.postimg.cc/3RPXYkxP/mosquitto-sub.png)](https://postimg.cc/9RYRBFTp)
 
-2. **NiFi**
+2. NiFi
 
 When the service is available, open a browser and navigate to http://localhost:8080/nifi to see NiFi UI.
 
-3. **Elasticsearch cluster and Kibana**  
+3. Elasticsearch cluster and Kibana
 
 If the Elasticsearch cluster is up, Kibana will be accesible opening a web browser and going to http://localhost:5601
 ### Load NiFi template <a name="nifiTemplate"></a>
 This project includes a template for NiFi in order to make the necessary data extractions, transformations and loading. Follow the next steps in order to upload it to NiFi:
-1. From the Operate Palette, click the "Upload Template" button ([![icon-Upload-Template.png](https://i.postimg.cc/Cx9HmVMJ/icon-Upload-Template.png)](https://postimg.cc/CRHqxXqf)) .This will display the Upload Template dialog.
+1. From the Operate Palette, click the "Upload Template" button ([![icon-Upload-Template.png](https://i.postimg.cc/Cx9HmVMJ/icon-Upload-Template.png)](https://postimg.cc/CRHqxXqf)). This will display the Upload Template dialog.
 
 2. Click the find icon and use the File Selection dialog to choose which template file to upload. 
 
@@ -132,9 +132,62 @@ This project includes a template for NiFi in order to make the necessary data ex
 4. Clicking the "Upload" button will attempt to import the Template into this instance of NiFi. The Upload Template dialog will update to show "Success" or an error message if there was a problem importing the template.
 
 5. Once the template has been imported, it is ready to be added to the canvas. This is accomplished by dragging the Template icon ([![icon-Template.png](https://i.postimg.cc/ncGh3KHW/icon-Template.png)](https://postimg.cc/gnrpJZLy)) from the Components Toolbar onto the canvas.  
-[Check the Apache NiFi documentation](https://nifi.apache.org/docs/nifi-docs/html/user-guide.html#Import_Template).
+[![nifi-add-template.png](https://i.postimg.cc/Sxw1jv52/nifi-add-template.png)](https://postimg.cc/gxHHTNGm) 
+
+[Check the Apache NiFi documentation](https://nifi.apache.org/docs/nifi-docs/html/user-guide.html#Import_Template).  
+
+6. If everything is correct, start all the processors to start pushing data into the Elasticsearch cluster:  
+
+[![nifi-overview.png](https://i.postimg.cc/y8zSdhj6/nifi-overview.png)](https://postimg.cc/ZCVqsdXX)
+
 ### Create custom alerts in Kibana <a name="alerts"></a>
-[![Capture3.png](https://i.postimg.cc/wTTCdDXZ/Capture3.png)](https://postimg.cc/HjRZwcP9)
+1. Navigate to http://localhost:5601
+
+2. From the main page burguer, navigate to Stack Management:
+
+[![kibana-stack-management.png](https://i.postimg.cc/HxWKXP0p/kibana-stack-management.png)](https://postimg.cc/2qJ2fGXJ)
+
+3. Select Index Management and verify that the index is properly created and the status is on green:
+
+[![kibana-index-state.png](https://i.postimg.cc/gJqhFN16/kibana-index-state.png)](https://postimg.cc/JD00jcr1)
+
+4. If you want to configure Slack or Email Alerts, you will need Gold license. For a trial, you can select License Management in the left pane:
+
+[![kibana-gold-license.png](https://i.postimg.cc/VLjk7JQd/kibana-gold-license.png)](https://postimg.cc/xc1Q8Td2)
+
+5. Go to Stack Management > Alerts and Actions:
+
+[![kibana-alertsandactions.png](https://i.postimg.cc/ncVPWWNB/kibana-alertsandactions.png)](https://postimg.cc/NLVD9dsj)
+
+6. Select Connectors > Create a connector. Follow the instructions to configure the connector of your choice. I have chosen Slack and Email. For Slack, you will need a webhook pointing to the channel of your preference (it is the faster option), for email you will need account, password, host and port. Try your connector before saving it.
+
+- Slack:
+[![kibana-connector-slack.png](https://i.postimg.cc/8P0gmDsj/kibana-connector-slack.png)](https://postimg.cc/KRBWm6P2)
+
+- Email:
+[![kibana-connector-email.png](https://i.postimg.cc/BQtd6yNs/kibana-connector-email.png)](https://postimg.cc/zVZd2x9P)
+
+- Saved connectors:
+[![kibana-connectors1.png](https://i.postimg.cc/zDQxdfSZ/kibana-connectors1.png)](https://postimg.cc/QVpgChy0)
+
+7. Now you are ready to create a custom alert of your choice. Select create alert. It will prompt a form for you to fill with the aggregations you prefer. I have created two for demo purposes:
+
+- "Stroke", that will trigger when the patient beats per minute fall below 40:
+
+[![kibana-alert-stroke.png](https://i.postimg.cc/yN9Jzv2y/kibana-alert-stroke.png)](https://postimg.cc/VSfsqBfJ)
+
+- And "Fever" that triggers when the average temperature of the patient get above 36 over the last 30 seconds:
+
+[![kibana-alert-fever.png](https://i.postimg.cc/hvKMmJVN/kibana-alert-fever.png)](https://postimg.cc/zbPnZGtk)
+
+8. Select the action that will be triggered if the previous configured rules are met and save the Alert:
+
+[![kibana-alert3.png](https://i.postimg.cc/nr5ZrtDj/kibana-alert3.png)](https://postimg.cc/n9vNSgTp)
+
+9. Check if it is working by patiently staring at your device until something happens, then celebrate that works by seeing a sad notification (I have chosen Slack action):
+
+[![slack-notification.jpg](https://i.postimg.cc/7Zr8W9Mk/slack-notification.jpg)](https://postimg.cc/PPyRLmR3)
+
 ### Create custom dashboards in Kibana <a name="dashboards"></a>
 [![Capture2.png](https://i.postimg.cc/LXpWQP4y/Capture2.png)](https://postimg.cc/rdfgKKrW)
 
