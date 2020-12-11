@@ -45,12 +45,12 @@ You can run this project on Windows 10 Pro, Mac OS or Linux, although Linux is p
 ### Set up your environment <a name="setup"></a>
 This application will launch a small Elasticsearch cluster. If you are using Linux, you may experience trouble launching the service if you do not set vm.max_map_count to at least 262144. Edit the sysctl.conf and set vm.max_map_count to 262144 permanently.
 ```
-grep vm.max_map_count /etc/sysctl.conf
-vm.max_map_count=262144
+$ grep vm.max_map_count /etc/sysctl.conf
+$ vm.max_map_count=262144
 ```
 It is possible to set it with this command, although it will not persist:
 ```
-sysctl -w vm.max_map_count=262144
+$ sysctl -w vm.max_map_count=262144
 ```
 ### Make optional changes to docker-compose.yml <a name="composeyml"></a>
 It is not required to modify this file in order to launch the application, but it is recommendable to change Kibana's XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY environment parameter value as represents the encryption key required in order to make alerts. 
@@ -120,7 +120,7 @@ When the service is available, open a browser and navigate to http://localhost:8
 
 3. Elasticsearch cluster and Kibana
 
-If the Elasticsearch cluster is up, Kibana will be accesible opening a web browser and going to http://localhost:5601
+If the Elasticsearch cluster is up, Kibana will be accesible by opening a web browser and going to http://localhost:5601
 ### Load NiFi template <a name="nifiTemplate"></a>
 This project includes a template for NiFi in order to make the necessary data extractions, transformations and loading. Follow the next steps in order to upload it to NiFi:
 1. From the Operate Palette, click the "Upload Template" button ([![icon-Upload-Template.png](https://i.postimg.cc/Cx9HmVMJ/icon-Upload-Template.png)](https://postimg.cc/CRHqxXqf)). This will display the Upload Template dialog.
@@ -189,6 +189,34 @@ This project includes a template for NiFi in order to make the necessary data ex
 [![slack-notification.jpg](https://i.postimg.cc/7Zr8W9Mk/slack-notification.jpg)](https://postimg.cc/PPyRLmR3)
 
 ### Create custom dashboards in Kibana <a name="dashboards"></a>
+1. Navigate to http://localhost:5601
+
+2. Click on the burguer at the top left corner and select dashboard:
+
+[![kibana-dash1.png](https://i.postimg.cc/W3mPGfHz/kibana-dash1.png)](https://postimg.cc/34w6797Q)
+
+3. Click on Create new:
+
+[![kibana-dash2.png](https://i.postimg.cc/NFpqV2Yw/kibana-dash2.png)](https://postimg.cc/tnZMnTYr)
+
+4. Select the visualization you want. For demo purposes, I will chose Line:
+
+[![kibana-dash3.png](https://i.postimg.cc/653Dq3ty/kibana-dash3.png)](https://postimg.cc/hhkC3KJB)
+
+5. Specify the indexes that you want to plot data from (with the * wildcard). In our case, the index is called "patient_data" so "pati*" will do it:
+
+[![kibana-dash4.png](https://i.postimg.cc/FRN64FTF/kibana-dash4.png)](https://postimg.cc/sBHmPzFb)
+
+6. Finally, fill the fields to show the visualization as data is being indexed. For this example, I will select beats_per_minute in Y axis and Date Histogram as timestamp aggregation in the X axis:
+
+[![kibana-dash5.png](https://i.postimg.cc/j51yhZnV/kibana-dash5.png)](https://postimg.cc/k6xVJNyw)
+
+7. I also create a gauge to plot the average temperature of the patient, colouring the temperature ranges according to their dangerousness (green being the least and red being the most dangerous range):
+
+[![kibana-dash6.png](https://i.postimg.cc/dtwGjkLV/kibana-dash6.png)](https://postimg.cc/Z0s9Tq8G)
+
+8. Feel free to add as many visualizations as you want, the will be presented as a whole dashboard as in the next image:
+
 [![Capture2.png](https://i.postimg.cc/LXpWQP4y/Capture2.png)](https://postimg.cc/rdfgKKrW)
 
 
